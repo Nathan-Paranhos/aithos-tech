@@ -6,7 +6,7 @@ from fastapi import UploadFile, HTTPException, status
 from firebase_admin import storage
 import tempfile
 
-from config.firebase import storage_bucket
+from config.firebase import bucket
 
 class StorageManager:
     """Classe para gerenciar operações de armazenamento de arquivos"""
@@ -29,7 +29,7 @@ class StorageManager:
                 temp_file.flush()
             
             # Fazer upload para o Firebase Storage
-            blob = storage_bucket.blob(file_path)
+            blob = bucket.blob(file_path)
             blob.upload_from_filename(temp_file.name)
             
             # Definir metadados
@@ -83,7 +83,7 @@ class StorageManager:
                 temp_file.flush()
             
             # Fazer upload para o Firebase Storage
-            blob = storage_bucket.blob(file_path)
+            blob = bucket.blob(file_path)
             blob.upload_from_filename(temp_file.name)
             
             # Definir metadados
@@ -126,7 +126,7 @@ class StorageManager:
         """Baixa um arquivo do Firebase Storage"""
         try:
             # Obter blob
-            blob = storage_bucket.blob(file_path)
+            blob = bucket.blob(file_path)
             
             # Verificar se o arquivo existe
             if not blob.exists():
@@ -143,7 +143,7 @@ class StorageManager:
         """Exclui um arquivo do Firebase Storage"""
         try:
             # Obter blob
-            blob = storage_bucket.blob(file_path)
+            blob = bucket.blob(file_path)
             
             # Verificar se o arquivo existe
             if not blob.exists():
@@ -161,7 +161,7 @@ class StorageManager:
         """Obtém metadados de um arquivo no Firebase Storage"""
         try:
             # Obter blob
-            blob = storage_bucket.blob(file_path)
+            blob = bucket.blob(file_path)
             
             # Verificar se o arquivo existe
             if not blob.exists():

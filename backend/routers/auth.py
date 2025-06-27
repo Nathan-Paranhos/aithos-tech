@@ -4,6 +4,7 @@ from typing import Dict, Any
 
 from models.user import UserCreate, UserUpdate, User
 from services import AuthService
+from services.auth_service import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -50,20 +51,18 @@ async def reset_password(data: Dict[str, str] = Body(...)):
     )
 
 @router.get("/me", response_model=User)
-async def get_current_user(user_id: str = Depends(AuthService.get_current_user_id)):
-    """Retorna informações do usuário atual"""
-    return await AuthService.get_user_by_id(user_id)
+async def get_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @router.put("/me", response_model=User)
 async def update_current_user(
     user_data: UserUpdate = Body(...),
-    user_id: str = Depends(AuthService.get_current_user_id)
+    current_user: User = Depends(get_current_user)
 ):
     """Atualiza informações do usuário atual"""
-    return await AuthService.update_user(user_id, user_data)
+    return await AuthService.update_user(current_user.id, user_data)
 
 @router.post("/logout", response_model=Dict[str, Any])
-async def logout(user_id: str = Depends(AuthService.get_current_user_id)):
-    """Realiza o logout do usuário"""
-    # Implementação simplificada - em uma aplicação real, você pode invalidar tokens
-    return {"message": "Logout realizado com sucesso"}
+async def logout(current_user: User = Depends(get_current_user)):
+    # Implement logout logic, e.g., invalidate token or log action
+    return {"message": "Logout bem-sucedido"}
